@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"  # Map the host's port 5432 to the container's port 5432
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com  # Use a valid email format
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5433:80"  # Map the host's port 5433 to the container's port 80
+    networks:
+      - app-network
+
+#  zookeeper:
+#    image: zookeeper:3.5
+#    container_name: zookeeper-order
+#    ports:
+#      - "2182:2181"  # Use a different port mapping for the second instance
+#    networks:
+#      - kafka-network-order
+#
+#  kafka:
+#      image: confluentinc/cp-kafka:latest
+#      container_name: kafka-order
+#      ports:
+#        - "9093:9092"  # Use a different port mapping for the second instance
+#      environment:
+#        KAFKA_ZOOKEEPER_CONNECT: zookeeper-order:2181
+#        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9093
+#        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      depends_on:
+#        - zookeeper
+#      networks:
+#        - kafka-network-order
+
+
+#  redis:
+#    image: redis:latest
+#    container_name: redis-order
+#    ports:
+#      - "6380:6379"  # Use a different port mapping for the second instance
+#    networks:
+#      - redis-network-order
+
+
+networks:
+  app-network:
+    driver: bridge
+#  kafka-network-order:
+#    driver: bridge
+#  redis-network-order:
+#    driver: bridge
+
