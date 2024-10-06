@@ -1,6 +1,8 @@
 package com.auth.authorize.service;
 
+import com.auth.authorize.common.entity.Role;
 import com.auth.authorize.common.entity.User;
+import com.auth.authorize.repository.RoleRepository;
 import com.auth.authorize.security.jwt.JWTService;
 import com.auth.authorize.controller.dto.request.AuthenticationRequest;
 import com.auth.authorize.controller.dto.request.RegisterRequest;
@@ -13,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -21,13 +25,17 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final RoleRepository roleRepository;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        Role role = roleRepository.findByName("ROLE_ADMIN").orElseThrow();
+
         User user = User.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
+                .roles(Set.of(role))
                 .build();
 
         user = userRepository.save(user);
