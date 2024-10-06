@@ -1,16 +1,16 @@
-package com.auth.authorize.config;
+package com.auth.authorize.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 
-import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,12 @@ import java.util.function.Function;
 
 @Service
 public class JWTService {
-    private final String SECRET_KEY = "kQ5gwwUn5QZpUG94UhdqftZzapdgyqdFCmXZFEAot3bYFTbm2XZ5PWNnZoDZrCRbpuauB99gKkrhBD99txFFfFRmKFraaHb4TxE6FffxzrxD6opfJEjpQKgq2hFJaTMh7RyXPb9mRnegtKaxLrkfcJ9MeU6uYHayL3oFGWTMmRHmjw8bdwJDSUaYtxFkAoZ9shUcGNq9M6TpXcJBw8PjUUy6qjqKSjdzrzPn42n9H7MXq244JaHounD7TXfouRtn";
+
+    @Value("${jwt.expiration.time}")
+    private Long expirationTime;
+
+    @Value("${jwt.secret-key}")
+    private String SECRET_KEY;
 
 
     public String extractUsername(String token) {
@@ -54,7 +59,7 @@ public class JWTService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime * 60 * 1000))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

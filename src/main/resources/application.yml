@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: AuthAndAuthorize
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authAndAuthorizeDB
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.sql
+    enabled: true
+
+# JWT settings
+jwt:
+  secret-key: kQ5gwwUn5QZpUG94UhdqftZzapdgyqdFCmXZFEAot3bYFTbm2XZ5PWNnZoDZrCRbpuauB99gKkrhBD99txFFfFRmKFraaHb4TxE6FffxzrxD6opfJEjpQKgq2hFJaTMh7RyXPb9mRnegtKaxLrkfcJ9MeU6uYHayL3oFGWTMmRHmjw8bdwJDSUaYtxFkAoZ9shUcGNq9M6TpXcJBw8PjUUy6qjqKSjdzrzPn42n9H7MXq244JaHounD7TXfouRtn
+  expiration:
+    time: 1440 # in minutes
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: order-service
+    ip-address: 127.0.0.1
+
+server:
+  port: 8070

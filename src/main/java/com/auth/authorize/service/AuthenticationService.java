@@ -1,14 +1,13 @@
 package com.auth.authorize.service;
 
 import com.auth.authorize.common.entity.User;
-import com.auth.authorize.config.JWTService;
+import com.auth.authorize.security.jwt.JWTService;
 import com.auth.authorize.controller.dto.request.AuthenticationRequest;
 import com.auth.authorize.controller.dto.request.RegisterRequest;
 import com.auth.authorize.controller.dto.response.AuthenticationResponse;
 import com.auth.authorize.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

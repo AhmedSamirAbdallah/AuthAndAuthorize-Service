@@ -1,4 +1,4 @@
-package com.auth.authorize.config;
+package com.auth.authorize.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

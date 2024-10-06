@@ -1,5 +1,6 @@
-package com.auth.authorize.config;
+package com.auth.authorize.security;
 
+import com.auth.authorize.security.jwt.JWTAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
