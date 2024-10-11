@@ -10,9 +10,11 @@ import com.auth.authorize.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,4 +58,12 @@ public class RoleService {
                         .collect(Collectors.toSet())
         );
     }
+
+    public List<RoleResponse> getRoles() {
+        return roleRepository.findAll()
+                .stream()
+                .map(role -> new RoleResponse(role.getId(),role.getName(),role.getAuthorities().stream().map(authority -> authority.getName()).collect(Collectors.toSet())))
+                .toList();
+    }
+
 }

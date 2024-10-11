@@ -1,7 +1,5 @@
 package com.auth.authorize.service;
 
-import com.auth.authorize.common.entity.User;
-import com.auth.authorize.controller.dto.request.RegisterRequest;
 import com.auth.authorize.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,13 +18,4 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
     }
 
-//    public User addUser(RegisterRequest request) {
-//        User user = User.builder()
-//                .firstName(request.firstName())
-//                .lastName(request.lastName())
-//                .email(request.email())
-//                .password(request.password())
-//                .
-//                .build();
-//    }
 }

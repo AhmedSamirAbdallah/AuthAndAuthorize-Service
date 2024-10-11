@@ -1,6 +1,8 @@
 package com.auth.authorize.security.jwt;
 
+import com.auth.authorize.common.entity.Authority;
 import com.auth.authorize.common.entity.Role;
+import com.auth.authorize.common.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -57,21 +59,29 @@ public class JWTService {
         return claimResolver.apply(claims);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        Set<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+    public String generateToken(Map<String, Object> extraClaims, User user) {
+        Map<String, Set<String>> roles = new HashMap<>();
+
+        for (Role role : user.getRoles()) {
+            roles.put(role.getName(), role.getAuthorities()
+                    .stream()
+                    .map(Authority::getName)
+                    .collect(Collectors.toSet()));
+        }
         extraClaims.put("roles", roles);
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime * 60 * 1000))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(User user) {
+        return generateToken(new HashMap<>(), user);
     }
 
     public Boolean isTokenExpired(String token) {

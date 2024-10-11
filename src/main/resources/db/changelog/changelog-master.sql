@@ -73,3 +73,5 @@ INSERT INTO public.authority (id, name) VALUES (nextval('authority_seq'), 'READ_
 INSERT INTO public.authority (id, name) VALUES (nextval('authority_seq'), 'WRITE_PRIVILEGES');
 INSERT INTO public.authority (id, name) VALUES (nextval('authority_seq'), 'CREATE_PRIVILEGES');
 INSERT INTO public.authority (id, name) VALUES (nextval('authority_seq'), 'DELETE_PRIVILEGES');
+
+INSERT INTO public.role_authorities (role_id,authority_id) VALUES ((select id from public.role where name='ROLE_ADMIN'),(select id from public.authority where name='READ_PRIVILEGES'));
