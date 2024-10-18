@@ -28,7 +28,7 @@ public class AuthenticationService {
     private final RoleRepository roleRepository;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        Role role = roleRepository.findByName("ROLE_ADMIN").orElseThrow();
+        Role role = roleRepository.findByName("ROLE_USER").orElseThrow();
 
         User user = User.builder()
                 .firstName(request.firstName())

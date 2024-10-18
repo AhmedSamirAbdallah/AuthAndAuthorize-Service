@@ -10,7 +10,6 @@ import com.auth.authorize.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -25,30 +24,7 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final AuthorityRepository authorityRepository;
 
-    @Transactional
-    public RoleResponse addRole(RoleRequest request) {
-        if (roleRepository.existsByName(request.name())) {
-            throw new BusinessException("role name already exist.", HttpStatus.BAD_REQUEST);
-        }
-
-        Set<Authority> authoritySet = new HashSet<>();
-
-        for (String authorityName : request.authorities()) {
-            Authority authority = authorityRepository.findByName(authorityName)
-                    .orElseGet(() -> authorityRepository.save(Authority.builder()
-                            .name(authorityName)
-                            .build()));
-            authoritySet.add(authority);
-        }
-
-
-        Role role = Role.builder()
-                .name(request.name())
-                .authorities(authoritySet)
-                .build();
-
-        role = roleRepository.save(role);
-
+    private RoleResponse mapRoleToRoleResponse(Role role) {
         return new RoleResponse(
                 role.getId(),
                 role.getName(),
@@ -59,10 +35,40 @@ public class RoleService {
         );
     }
 
+    @Transactional
+    public RoleResponse addRole(RoleRequest request) {
+        if (roleRepository.existsByName(request.name())) {
+            throw new BusinessException("role name already exist.", HttpStatus.BAD_REQUEST);
+        }
+
+        Set<Authority> authoritySet = new HashSet<>();
+
+        for (String authorityName : request.authorities()) {
+            if (authorityRepository.existsByName(authorityName)) {
+                throw new BusinessException("authority name already exist.", HttpStatus.BAD_REQUEST);
+            }
+
+            Authority authority = Authority.builder()
+                    .name(authorityName)
+                    .build();
+            authorityRepository.save(authority);
+            authoritySet.add(authority);
+        }
+
+        Role role = Role.builder()
+                .name(request.name())
+                .authorities(authoritySet)
+                .build();
+
+        role = roleRepository.save(role);
+
+        return mapRoleToRoleResponse(role);
+    }
+
     public List<RoleResponse> getRoles() {
         return roleRepository.findAll()
                 .stream()
-                .map(role -> new RoleResponse(role.getId(),role.getName(),role.getAuthorities().stream().map(authority -> authority.getName()).collect(Collectors.toSet())))
+                .map(role -> mapRoleToRoleResponse(role))
                 .toList();
     }
 
