@@ -17,13 +17,13 @@ public class RoleController {
     private final RoleService roleService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasAuthority('CREATE_PRIVILEGES')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('CREATE_PRIVILEGES')")
     public ResponseEntity<RoleResponse> addRole(@RequestBody RoleRequest request) {
         return ResponseEntity.ok(roleService.addRole(request));
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasAuthority('READ_PRIVILEGES')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('READ_PRIVILEGES')")
     public ResponseEntity<List<RoleResponse>> getRoles() {
         return ResponseEntity.ok(roleService.getRoles());
     }

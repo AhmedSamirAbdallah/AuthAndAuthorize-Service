@@ -7,11 +7,13 @@ import com.auth.authorize.controller.dto.response.AssignedRoleToUserResponse;
 import com.auth.authorize.repository.RoleRepository;
 import com.auth.authorize.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,5 +49,12 @@ public class UserService implements UserDetailsService {
 
 
     //todo add method to get all roles and auth of a user
+    public Set<String> getAllRolesAndAuthorities(Long userId) {
+        User user = getUserById(userId);
+
+        return user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+    }
 
 }

@@ -6,22 +6,28 @@ import com.auth.authorize.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
-@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping("/assign")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasAuthority('WRITE_PRIVILEGES')")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('CREATE_PRIVILEGES')")
     public ResponseEntity<AssignedRoleToUserResponse> assignRoleToUser(@RequestBody AssignUserRequest request) {
-        return ResponseEntity.ok(userService.assignRoleToUser(request));
+        AssignedRoleToUserResponse response = userService.assignRoleToUser(request);
+        return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{userId}/roles-and-authorities")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Set<String>> getUserRolesAndAuthorities(@PathVariable Long userId) {
+        Set<String> rolesAndAuthorities = userService.getAllRolesAndAuthorities(userId);
+        return ResponseEntity.ok(rolesAndAuthorities);
+    }
 }
